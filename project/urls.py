@@ -27,6 +27,7 @@ from rest_framework_simplejwt.views import(
 urlpatterns = [
     # FOR API
     path('api/', include('accounts.apiurls')),
+    path('api/', include('store.apiurls')),
 
     # FOR API Authentication
     path('api-auth/', include('rest_framework.urls')),

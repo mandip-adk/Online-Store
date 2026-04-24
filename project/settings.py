@@ -155,6 +155,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
+# Site URL (used for payment callbacks)
+SITE_URL = config('SITE_URL', default='http://127.0.0.1:8000')
+
+# Khalti Payment
+KHALTI_SECRET_KEY = config('KHALTI_SECRET_KEY', default='')
+KHALTI_PUBLIC_KEY = config('KHALTI_PUBLIC_KEY', default='')
 
 
 ################################### JAZZMIN Setting ####################################

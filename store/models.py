@@ -145,3 +145,5 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.order.order_id} - {self.status}"
+    
+

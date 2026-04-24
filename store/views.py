@@ -306,7 +306,10 @@ def khalti_payment(request, order_id):
         response.raise_for_status()
         data = response.json()
     except requests.RequestException as e:
-        messages.error(request, "Payment service unavailable. Try again later.")
+        print("KHALTI ERROR:", e)
+        if hasattr(e, 'response') and e.response is not None:
+            print("Response:", e.response.text)
+        messages.error(request, "Payment service unavailable. Check console.")
         return redirect("store:order_page")
     pidx = data.get("pidx")
     payment_url = data.get("payment_url")
