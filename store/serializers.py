@@ -4,18 +4,37 @@ from .models import Category, Product, Cart, CartProduct, Order, OrderItem, Paym
 class CategorySerializer (serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name']
 
 
-class ProductSerializer (serializers.ModelSerializer):
-    categories = CategorySerializer(many = True, read_only = True)
+class BaseProductSerializer(serializers.ModelSerializer):
+    categories = CategorySerializer(many=True, read_only=True)
+    category_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        many=True,
+        write_only=True,
+        source='categories'
+    )
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = [
+            'id', 'name', 'price', 'image',
+            'description', 'created_at', 'updated_at',
+            'categories', 'category_ids'
+        ]
 
+
+class ProductPublicSerializer(BaseProductSerializer):
+    pass
+
+
+class ProductAdminSerializer(BaseProductSerializer):
+    class Meta(BaseProductSerializer.Meta):
+        fields = BaseProductSerializer.Meta.fields + ['featured']
 
 class CartProductSerializer (serializers.ModelSerializer):
-    product = ProductSerializer(read_only = True)
+    product = ProductPublicSerializer(read_only = True)
     total_price = serializers.ReadOnlyField(source = 'get_total_price')
     class Meta:
         model = CartProduct
