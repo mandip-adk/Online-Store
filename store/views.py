@@ -328,41 +328,54 @@ def khalti_payment(request, order_id):
 
 @login_required(login_url=reverse_lazy("accounts:login_page"))
 def khalti_payment_response(request):
-    payment_status = request.GET.get("status")
     pidx = request.GET.get("pidx")
-    transaction_id = request.GET.get("transcation_id")
-    purchase_order_id = request.GET.get("purchase_order_id")
-    amount =Decimal (request.Get.get("total_amount")) /100
 
+    if not pidx:
+        messages.error(request, "Invalid payment response.")
+        return redirect("store:home_page")
 
     try:
-        payment = Payment.objects.get(
-            pidx=pidx,
-            purchase_order_id=purchase_order_id,
-            amount=amount
-        )
+        payment = Payment.objects.get(pidx=pidx)
     except Payment.DoesNotExist:
-        messages.error(request, "Payment not verified yet, please contact the administrator.")
+        messages.error(request, "Payment not found.")
         return redirect("store:home_page")
-    except Exception:
-        messages.error(request, "Payment not verified yet, please contact the administrator.")
+
+    # 🔥 VERIFY WITH KHALTI
+    url = "https://dev.khalti.com/api/v2/epayment/lookup/"
+    headers = {
+        "Authorization": f"Key {settings.KHALTI_SECRET_KEY}",
+        "Content-Type": "application/json",
+    }
+    data = {"pidx": pidx}
+
+    try:
+        response = requests.post(url, json=data, headers=headers, timeout=10)
+        response.raise_for_status()
+        res_data = response.json()
+    except requests.RequestException:
+        messages.error(request, "Failed to verify payment.")
         return redirect("store:home_page")
-    else:
+
+    #  TRUST
+    if res_data.get("status") == "Completed":
         try:
             with transaction.atomic():
                 payment.status = Payment.Status.SUCCESS
                 payment.save()
-                
-                order = payment.order   # ✅ get related order object
+
+                order = payment.order
                 order.status = Order.Status.PAID
                 order.save()
-
-        except IntegrityError:
-            messages.error(request, "Payment not verified yet, please contact the administrator.")
+        except Exception:
+            messages.error(request, "Error updating payment.")
             return redirect("store:home_page")
-        else:
-            messages.success(
-                request,
-                "Payment done, please wait for product to reach your doorstep."
-            )
-            return redirect("store:order_page")
+
+        messages.success(request, "Payment successful 🎉")
+        return redirect("store:order_page")
+
+    else:
+        payment.status = Payment.Status.FAILED
+        payment.save()
+
+        messages.error(request, "Payment failed or cancelled.")
+        return redirect("store:order_page")

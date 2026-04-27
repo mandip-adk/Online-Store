@@ -5,10 +5,11 @@ from .models import (
     Payment , OrderItem, Order)
 from .serializers import (
     CategorySerializer, ProductPublicSerializer,
-    ProductAdminSerializer, BaseProductSerializer,
+    ProductAdminSerializer,
     CartProductSerializer, CartSerializer, 
     OrderItemSerializer, OrderSerializer)
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -33,5 +34,18 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminUser()]
         return [IsAuthenticatedOrReadOnly()]
+    
+
+class CartViewSet(viewsets.ModelViewSet):
+    serializer_class = CartSerializer
+    queryset = Cart.objects.all()
+    http_method_names = ['get'] 
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Cart.objects.none() 
+        cart, created = Cart.objects.get_or_create(user=user)
+        return Cart.objects.filter(user=user)
+    
     
 

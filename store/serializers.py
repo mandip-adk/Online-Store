@@ -34,7 +34,8 @@ class ProductAdminSerializer(BaseProductSerializer):
         fields = BaseProductSerializer.Meta.fields + ['featured']
 
 class CartProductSerializer (serializers.ModelSerializer):
-    product = ProductPublicSerializer(read_only = True)
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_price = serializers.DecimalField(source='product.price', max_digits=10, decimal_places=2, read_only=True)
     total_price = serializers.ReadOnlyField(source = 'get_total_price')
     class Meta:
         model = CartProduct
@@ -42,7 +43,15 @@ class CartProductSerializer (serializers.ModelSerializer):
 
 
 class CartSerializer (serializers.ModelSerializer):
-    product = CartProductSerializer(many = True, read_only = True)
+    products = CartProductSerializer(many = True, read_only = True)
+    total_cart_price = serializers.SerializerMethodField()
+
+    def get_total_cart_price(self,obj):
+        return sum (
+            item.quantity * item.product.price
+            for item in obj.products.all()
+        )
+    
     class Meta:
         model = Cart
         fields = '__all__'
@@ -63,6 +72,20 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+
+class AddToCartSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(default = 1)
+
+
+class UpdateCartSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+
+
+class RemoveCartSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
 
 
 class PaymentSerializer(serializers.ModelSerializer):
