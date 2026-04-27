@@ -65,7 +65,7 @@ A Django-based e-commerce web application implementing core online shopping func
 
 ---
 
-### 💳 Payment (Khalti – Partial Implementation)
+### 💳 Payment Integration (Khalti – Implemented)
 - Khalti ePayment integration (test environment) 
 - Payment verification logic implemented  
 - Transaction ID & pidx handling  
