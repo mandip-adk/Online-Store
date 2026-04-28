@@ -102,13 +102,17 @@ A Django-based e-commerce web application implementing core online shopping func
 
 online-store/
 │
-├── accounts/          # User model, authentication, delivery profiles & API
-├── store/             # Products, cart, orders, payment logic & APIs
-├── common_templates/  # Shared templates
-├── project/           # Main Django project settings
+├── accounts/              # User model, authentication, delivery profiles & APIs
+│
+├── store/                 # Products, cart, orders, payment logic & APIs
+│
+├── common_templates/      # Shared templates
+│
+├── project/               # Main Django project settings
+│
 ├── manage.py
+│
 └── requirements.txt
-
 ---
 
 ## ⚙️ Installation & Setup

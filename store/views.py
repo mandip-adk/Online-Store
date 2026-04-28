@@ -222,9 +222,20 @@ def cancel_order(request, pk):
 @login_required(login_url=reverse_lazy("accounts:login_page"))
 def order(request):
 
-    orders = Order.objects.filter(user=request.user)
+    pending_orders = Order.objects.filter(
+        user=request.user,
+        status=Order.Status.PENDING
+    )
 
-    context = {"orders": orders}
+    paid_orders = Order.objects.filter(
+        user=request.user,
+        status=Order.Status.PAID
+    )
+
+    context = {
+        "pending_orders": pending_orders,
+        "paid_orders": paid_orders,
+    }
 
     return render(request, "store/order.html", context)
 

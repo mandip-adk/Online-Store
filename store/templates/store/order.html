@@ -1,167 +1,284 @@
 {% extends 'base.html' %}
 
-{% block title %}Your Cart — Organic Store{% endblock title %}
-
-{% block extra_head %}
-<style>
-    .cart-container {
-        padding: 60px 0;
-    }
-
-    .cart-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 15px;
-    }
-
-    .cart-table th {
-        text-align: left;
-        color: var(--organic-dark);
-        font-weight: 600;
-        padding-bottom: 10px;
-    }
-
-    .cart-table td {
-        vertical-align: middle;
-        background: #ffffffd9;
-        padding: 15px;
-        border-radius: 12px;
-    }
-
-    .cart-table img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-
-    .quantity-input {
-        width: 60px;
-        padding: 5px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        text-align: center;
-    }
-
-    .btn-remove {
-        background-color: #ff6b6b;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 12px;
-        transition: 0.2s;
-    }
-
-    .btn-remove:hover {
-        background-color: #e03f3f;
-    }
-
-    .cart-summary {
-        background: #f4f9f4;
-        padding: 25px;
-        border-radius: 12px;
-        margin-top: 20px;
-    }
-
-    .cart-summary h4 {
-        font-family: 'Caveat', cursive !important;
-        color: var(--organic-dark);
-        margin-bottom: 20px;
-    }
-
-    .btn-checkout {
-        background-color: var(--organic-primary);
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 25px;
-        font-weight: 600;
-        transition: 0.2s;
-        width: 100%;
-    }
-
-    .btn-checkout:hover {
-        background-color: var(--organic-dark);
-        color: #fff;
-    }
-
-    .order-status {
-        padding: 4px 6px;
-        border-radius: 6px;
-        background-color: rgb(0, 207, 0);
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .cart-table img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .quantity-input {
-            width: 50px;
-        }
-    }
-</style>
-{% endblock extra_head %}
+{% block title %}Your Orders — Organic Store{% endblock title %}
 
 {% block content %}
-<section class="container cart-container">
-    <h2 class="mb-4" style="font-family: 'Caveat', cursive; color: var(--organic-dark);">Your Orders</h2>
+<style>
+  .orders-page { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
 
-    {% if orders %}
-    {% for order in orders %}
-    <table class="cart-table mb-5 mt-2">
-        <div class="d-flex justify-content-between">
-            <div class="d-flex gap-3 ">
-                <h2> {{order.order_id}} </h2>
-                <p class="order-status"> {{order.get_status_display}}</p>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="{% url 'store:khalti_payment' order.order_id %}" class="btn btn-success">Pay</a>
-                <form action="{% url 'store:cancel_order' order.id %}" method="post"
-                    onsubmit="return confirm('Are you sure you want to cancel this order?')">
+  .orders-page h2 {
+    font-family: 'Caveat', cursive;
+    color: var(--organic-dark);
+    font-size: 2.2rem;
+    margin-bottom: 0.25rem;
+  }
 
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger">Cancel order</button>
-                </form>
-            </div>
+  .orders-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6b7c61;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1.5px solid #dce8d1;
+  }
+
+  .order-card {
+    background: #fff;
+    border: 1px solid #dce8d1;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+
+  .order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    background: #f6faf3;
+    border-bottom: 1px solid #dce8d1;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .order-meta { display: flex; align-items: center; gap: 0.75rem; }
+
+  .order-id {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2e4a22;
+    font-family: monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .status-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .status-pending  { background: #fff3cd; color: #7a5c00; border: 1px solid #f0d060; }
+  .status-paid     { background: #d4edda; color: #1a5c2e; border: 1px solid #9fd3ae; }
+
+  .order-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+  .btn-pay {
+    background: #3a7d2c;
+    color: #fff;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-pay:hover { background: #2e6122; color: #fff; }
+
+  .btn-cancel {
+    background: transparent;
+    color: #b94040;
+    border: 1px solid #e0a0a0;
+    padding: 5px 14px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-cancel:hover { background: #fdf0f0; }
+
+  .payment-done {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #2a7a42;
+  }
+
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .order-table thead tr {
+    border-bottom: 1px solid #e8f0e3;
+  }
+
+  .order-table th {
+    padding: 0.65rem 1.25rem;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a9468;
+  }
+  .order-table th.right,
+  .order-table td.right { text-align: right; }
+
+  .order-table td {
+    padding: 0.75rem 1.25rem;
+    color: #2e3a28;
+    border-bottom: 1px solid #f0f5ec;
+    vertical-align: middle;
+  }
+
+  .order-table tbody tr:last-child td { border-bottom: none; }
+
+  .product-cell { display: flex; align-items: center; gap: 0.75rem; }
+
+  .product-cell img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e0ecda;
+    flex-shrink: 0;
+  }
+
+  .product-name { font-weight: 500; color: #243020; }
+
+  .order-table tfoot td {
+    padding: 0.75rem 1.25rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #2e4a22;
+    background: #f6faf3;
+    border-top: 1.5px solid #dce8d1;
+  }
+
+  .empty-state {
+    background: #f9fdf7;
+    border: 1px dashed #c8ddbf;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    color: #7a9468;
+    font-size: 0.9rem;
+  }
+</style>
+
+<section class="orders-page">
+
+  <h2>Your Orders</h2>
+
+  <!-- PENDING ORDERS -->
+  <p class="orders-section-title">Pending Orders</p>
+
+  {% if pending_orders %}
+    {% for order in pending_orders %}
+    <div class="order-card">
+      <div class="order-card-header">
+        <div class="order-meta">
+          <span class="order-id">{{ order.order_id }}</span>
+          <span class="status-badge status-pending">{{ order.get_status_display }}</span>
         </div>
-        <hr>
+        <div class="order-actions">
+          <a href="{% url 'store:khalti_payment' order.order_id %}" class="btn-pay">Pay with Khalti</a>
+          <form action="{% url 'store:cancel_order' order.id %}" method="post"
+            onsubmit="return confirm('Are you sure you want to cancel this order?')" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="btn-cancel">Cancel</button>
+          </form>
+        </div>
+      </div>
+
+      <table class="order-table">
         <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-            </tr>
+          <tr>
+            <th>Product</th>
+            <th class="right">Price</th>
+            <th class="right">Qty</th>
+            <th class="right">Subtotal</th>
+          </tr>
         </thead>
         <tbody>
-            {% for item in order.items.all %}
-            <tr>
-                <td>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                        <span>{{ item.product.name }}</span>
-                    </div>
-                </td>
-                <td> Rs. {{ item.product.price }}</td>
-                <td>
-                    {{ item.quantity }}
-                </td>
-                <td>Rs.{{ item.get_total_price }}</td>
-
-            </tr>
-            {% endfor %}
+          {% for item in order.items.all %}
+          <tr>
+            <td>
+              <div class="product-cell">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                <span class="product-name">{{ item.product.name }}</span>
+              </div>
+            </td>
+            <td class="right">Rs. {{ item.product.price }}</td>
+            <td class="right">{{ item.quantity }}</td>
+            <td class="right">Rs. {{ item.get_total_price }}</td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="right">Total</td>
+            <td class="right">Rs. {{ order.total }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
     {% endfor %}
+  {% else %}
+    <div class="empty-state">No pending orders.</div>
+  {% endif %}
 
 
-    {% else %}
-    <p class="text-center">Your cart is empty. <a href="{% url 'store:products_page' %}"
-            style="color: var(--organic-primary);">Shop Now</a>
-    </p>
-    {% endif %}
+  <!-- COMPLETED ORDERS -->
+  <p class="orders-section-title">Completed Orders</p>
+
+  {% if paid_orders %}
+    {% for order in paid_orders %}
+    <div class="order-card">
+      <div class="order-card-header">
+        <div class="order-meta">
+          <span class="order-id">{{ order.order_id }}</span>
+          <span class="status-badge status-paid">Paid ✓</span>
+        </div>
+        <div>
+          <span class="payment-done">✓ Payment Completed</span>
+        </div>
+      </div>
+
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th class="right">Price</th>
+            <th class="right">Qty</th>
+            <th class="right">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>
+              <div class="product-cell">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                <span class="product-name">{{ item.product.name }}</span>
+              </div>
+            </td>
+            <td class="right">Rs. {{ item.product.price }}</td>
+            <td class="right">{{ item.quantity }}</td>
+            <td class="right">Rs. {{ item.get_total_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="right">Total</td>
+            <td class="right">Rs. {{ order.total }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">No completed orders yet.</div>
+  {% endif %}
+
 </section>
 {% endblock content %}
+
