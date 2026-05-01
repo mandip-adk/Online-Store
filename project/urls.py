@@ -22,9 +22,12 @@ from rest_framework_simplejwt.views import(
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.shortcuts import redirect
 
 
 urlpatterns = [
+     #  Homepage redirect
+    path('', lambda request: redirect('/store/')),
     # FOR API
     path('api/', include('accounts.apiurls')),
     path('api/', include('store.apiurls')),
