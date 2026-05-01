@@ -43,7 +43,7 @@ SECRET_KEY = config('SECRET_KEY', default='dev-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost,https://online-store-abqf.onrender.com').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
