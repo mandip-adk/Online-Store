@@ -1,5 +1,7 @@
 # Online Store – Django E-commerce Application
 
+🌐 **Live Demo:** https://online-store-abqf.onrender.com
+
 A Django-based e-commerce web application implementing core online shopping functionality including product management, cart system, order processing, and payment integration concepts.
 
 ## 🚀 Features
@@ -90,7 +92,7 @@ A Django-based e-commerce web application implementing core online shopping func
 
 ## 🛠️ Tech Stack
 - **Backend:** Python, Django, Django REST Framework  
-- **Database:** SQLite (can be switched to PostgreSQL)  
+- **Database:** PostgreSQL (Render) / SQLite (local development)  
 - **Authentication:** JWT (SimpleJWT)  
 - **Frontend:** Django Templates (HTML, CSS)  
 - **Payment Gateway:** Khalti API (Sandbox)  
@@ -152,7 +154,7 @@ online-store/
 
 ## ⚠️ Notes
 - Khalti integration uses sandbox/test environment  
-- Designed for learning and portfolio purposes (not production-ready)  
+- Deployed on Render with PostgreSQL and Cloudinary media storage
 - Can be extended with React frontend or deployed using AWS  
 
 ---
@@ -179,7 +181,7 @@ online-store/
 ## 🌐 Future Improvements
 
 - Frontend using React / Next.js  
-- Deployment on AWS (EC2 + S3)  
+- Switch Khalti to live environment
 - Payment webhook handling  
 - Real-time order tracking  
 
@@ -188,3 +190,4 @@ online-store/
 ## 👤 Author
 **Mandip Adhikari**  
 GitHub: https://github.com/mandip-adk
+
