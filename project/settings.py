@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "accounts","store",
     'rest_framework',
     'cloudinary_storage',
-    'django.contrib.staticfiles',
     'cloudinary',
     
 ]
