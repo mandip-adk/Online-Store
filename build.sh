@@ -3,6 +3,7 @@ set -o errexit
 
 pip install -r requirements.txt
 python manage.py collectstatic --noinput
+python manage.py migrate store 0008 --fake || true
 python manage.py migrate store 0009 --fake || true
 python manage.py migrate store 0010 --fake || true
 python manage.py migrate
