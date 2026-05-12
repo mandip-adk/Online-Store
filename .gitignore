@@ -1,6 +1,29 @@
-media/
-db.sqlite3
+# Virtual environments
 venv/
-__pycache__
+env/
+
+# Python cache
+__pycache__/
 *.pyc
+
+# Environment variables
 .env
+
+# Django database
+db.sqlite3
+
+# Media uploads
+media/
+
+# Fixture/data dumps
+data.json
+
+# Static collected files
+staticfiles/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
