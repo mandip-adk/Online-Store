@@ -73,3 +73,10 @@ def customer_profile(request):
         
     context = {"form":form, "addresses":addresses}
     return render(request, "accounts/customer_profile.html", context)
+
+def about(request):
+    return render(request, 'accounts/about.html')
+
+def contact(request):
+    return render(request, 'accounts/contact.html')
+

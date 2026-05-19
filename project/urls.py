@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import(
     TokenRefreshView,
 )
 from django.shortcuts import redirect
+from accounts.views import about, contact
 
 
 urlpatterns = [
@@ -41,7 +42,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("accounts.urls")),
     path("store/", include("store.urls")),
-
+    path("about/", about, name= "about"),
+    path("contact/", contact, name= "contact"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

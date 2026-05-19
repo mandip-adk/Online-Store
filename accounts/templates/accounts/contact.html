@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us — Organic Store{% endblock %}
+
+{% block content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --green-dark: #2e4a22;
+    --green-mid: #3a7d2c;
+    --green-light: #f6faf3;
+    --green-border: #dce8d1;
+    --green-muted: #6b7c61;
+    --cream: #fdfaf5;
+    --text: #1e2e18;
+  }
+
+  .contact-page { font-family: 'DM Sans', sans-serif; color: var(--text); }
+
+  /* HERO */
+  .contact-hero {
+    background: var(--green-dark);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, #3a7d2c44 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, #2e6122aa 0%, transparent 60%);
+  }
+  .contact-hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+  .contact-hero h1 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: #fff;
+    margin-bottom: 0.75rem;
+    line-height: 1.1;
+  }
+  .contact-hero p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: #c8ddbf;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  /* MAIN LAYOUT */
+  .contact-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* INFO SIDE */
+  .section-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green-mid);
+    margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-family: 'Caveat', cursive;
+    font-size: 2.2rem;
+    color: var(--green-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .info-cards { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+  .info-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--green-border);
+    border-radius: 14px;
+    transition: box-shadow 0.2s;
+  }
+  .info-card:hover { box-shadow: 0 4px 16px #3a7d2c14; }
+  .info-icon {
+    width: 42px; height: 42px;
+    background: var(--green-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .info-card h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-muted); margin-bottom: 0.2rem; }
+  .info-card p { font-size: 0.9rem; color: var(--green-dark); font-weight: 500; }
+  .info-card a { color: var(--green-dark); text-decoration: none; }
+  .info-card a:hover { color: var(--green-mid); }
+
+  /* SOCIAL */
+  .social-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green-muted); margin-bottom: 0.75rem; }
+  .social-links { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+  .social-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--green-border);
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--green-dark);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .social-btn:hover { background: var(--green-light); border-color: var(--green-mid); }
+
+  /* MAP */
+  .map-section {
+    background: var(--green-light);
+    padding: 0 2rem 3rem;
+  }
+  .map-inner { max-width: 1100px; margin: 0 auto; }
+  .map-inner .section-tag { padding-top: 3rem; display: block; }
+  .map-inner .section-title { margin-top: 0.4rem; }
+  .map-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--green-border);
+    box-shadow: 0 4px 20px #3a7d2c10;
+  }
+  .map-frame iframe { display: block; width: 100%; height: 380px; border: none; }
+
+  /* FORM */
+  .contact-form-card {
+    background: #fff;
+    border: 1px solid var(--green-border);
+    border-radius: 20px;
+    padding: 2.25rem;
+    box-shadow: 0 4px 24px #3a7d2c0a;
+  }
+  .form-title {
+    font-family: 'Caveat', cursive;
+    font-size: 1.8rem;
+    color: var(--green-dark);
+    margin-bottom: 1.5rem;
+  }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.1rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green-muted);
+    margin-bottom: 0.4rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--green-border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px #3a7d2c14;
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--green-mid);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .btn-submit:hover { background: var(--green-dark); }
+  .btn-submit:active { transform: scale(0.99); }
+
+  .success-msg {
+    background: #d4edda;
+    border: 1px solid #9fd3ae;
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    color: #1a5c2e;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    display: {% if messages %}block{% else %}none{% endif %};
+  }
+
+  @media (max-width: 768px) {
+    .contact-main { grid-template-columns: 1fr; gap: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="contact-hero-content">
+    <h1>Get in Touch 🌿</h1>
+    <p>We'd love to hear from you — whether it's a question, feedback, or just a hello.</p>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="contact-main">
+
+  <!-- LEFT: INFO -->
+  <div>
+    <p class="section-tag">Contact Info</p>
+    <h2 class="section-title">We're Here to Help</h2>
+
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-icon">📍</div>
+        <div>
+          <h4>Address</h4>
+          <p>Kathmandu, Bagmati Province, Nepal</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">📞</div>
+        <div>
+          <h4>Phone</h4>
+          <p><a href="tel:+9779800000000">+977 98-0000-0000</a></p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">✉️</div>
+        <div>
+          <h4>Email</h4>
+          <p><a href="mailto:hello@organicstore.com.np">hello@organicstore.com.np</a></p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🕐</div>
+        <div>
+          <h4>Working Hours</h4>
+          <p>Sun – Fri: 8:00 AM – 6:00 PM</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="social-title">Follow Us</p>
+    <div class="social-links">
+      <a href="#" class="social-btn">📘 Facebook</a>
+      <a href="#" class="social-btn">📸 Instagram</a>
+      <a href="#" class="social-btn">🐦 Twitter</a>
+      <a href="#" class="social-btn">▶️ YouTube</a>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="contact-form-card">
+    <h3 class="form-title">Send us a Message</h3>
+
+    {% if messages %}
+    <div class="success-msg">
+      ✅ Your message has been sent! We'll get back to you shortly.
+    </div>
+    {% endif %}
+
+    <form method="POST" action="">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" placeholder="Mandip" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" placeholder="Adhikari" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select name="subject">
+          <option value="">Select a subject</option>
+          <option value="order">Order Issue</option>
+          <option value="product">Product Query</option>
+          <option value="delivery">Delivery Problem</option>
+          <option value="payment">Payment Issue</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea name="message" placeholder="Write your message here..." required></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Send Message →</button>
+    </form>
+  </div>
+
+</div>
+
+<!-- MAP -->
+<section class="map-section">
+  <div class="map-inner">
+    <span class="section-tag">Find Us</span>
+    <h2 class="section-title">Our Location</h2>
+    <div class="map-frame">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d56516.31625951067!2d85.29111865!3d27.7088534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198a307baabf%3A0xb5137c1bf18db1ea!2sKathmandu%2C%20Nepal!5e0!3m2!1sen!2snp!4v1715000000000!5m2!1sen!2snp"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
